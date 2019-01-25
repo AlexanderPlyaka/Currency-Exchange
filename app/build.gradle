@@ -16,9 +16,6 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
-        //buildConfigField "String", 'Url', '"http://obriylabs.com.ua/"'
-        //buildConfigField "String", 'DynamicUrl', '"http://obriylabs.com.ua/data/updateDatabase.json"' todo
-
     }
     buildTypes {
         release {
