@@ -3,14 +3,11 @@ package com.obriylabs.currencyandroid.ui.fragments.start
 import android.Manifest
 import android.app.Activity
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
 import android.widget.Toast
 
 import com.obriylabs.currencyandroid.R
 import com.obriylabs.currencyandroid.ui.base.BaseFragment
-import javax.inject.Inject
 import android.support.design.widget.Snackbar
 import android.os.Build
 import android.content.Intent
@@ -20,12 +17,7 @@ import android.support.v4.content.PermissionChecker.checkCallingOrSelfPermission
 import androidx.navigation.Navigation
 
 
-class StartFragment : BaseFragment(R.layout.start_fragment) {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private lateinit var viewModel: StartViewModel
+class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
 
     private val permissions: Array<String> = arrayOf(
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -45,12 +37,10 @@ class StartFragment : BaseFragment(R.layout.start_fragment) {
     }
 
     private fun loadData() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(StartViewModel::class.java)
         viewModel.exchangers.observe(this, Observer { repos ->
             if (repos?.data?.isNotEmpty() == true)
                 view?.let { Navigation.findNavController(it).navigate(R.id.mapsFragment) }
         })
-
     }
 
     /**

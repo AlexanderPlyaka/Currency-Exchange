@@ -1,24 +1,25 @@
 package com.obriylabs.currencyandroid.ui
 
 import android.os.Bundle
-
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
+import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import com.obriylabs.currencyandroid.R
-import com.obriylabs.currencyandroid.ui.base.BaseActivity
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
+import javax.inject.Inject
 
 
-class MainActivity : BaseActivity(R.layout.activity_maps), INavigation {
+class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
-    lateinit var navController: NavController
+    @Inject
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment)
+        // Retrieve the content view that renders the map.
+        setContentView(R.layout.activity_maps)
     }
 
-    override fun toMapsFragment() {
-        navController.navigate(R.id.mapsFragment)
-    }
+    override fun supportFragmentInjector(): DispatchingAndroidInjector<Fragment> = fragmentInjector
+
 }

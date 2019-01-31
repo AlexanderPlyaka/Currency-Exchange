@@ -1,8 +1,6 @@
 package com.obriylabs.currencyandroid.ui.fragments.map
 
 import android.app.Activity
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,9 +18,8 @@ import com.obriylabs.currencyandroid.R
 import com.obriylabs.currencyandroid.ui.base.BaseFragment
 import com.obriylabs.currencyandroid.extension.logD
 import com.obriylabs.currencyandroid.extension.logE
-import javax.inject.Inject
 
-class MapsFragment : BaseFragment(R.layout.maps_fragment), OnMapReadyCallback {
+class MapsFragment : BaseFragment<MapsViewModel>(R.layout.maps_fragment), OnMapReadyCallback {
 
     private var googleMap: GoogleMap? = null
     // The entry point to the Fused Location Provider.
@@ -31,11 +28,6 @@ class MapsFragment : BaseFragment(R.layout.maps_fragment), OnMapReadyCallback {
     // location retrieved by the Fused Location Provider.
     private var mLastKnownLocation: Location? = null
     private var mCameraPosition: CameraPosition? = null
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private lateinit var viewModel: MapsViewModel
 
     companion object {
         // Keys for storing activity state.
@@ -66,12 +58,6 @@ class MapsFragment : BaseFragment(R.layout.maps_fragment), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         return view
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MapsViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
     /**

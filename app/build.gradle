@@ -16,9 +16,6 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
-        //buildConfigField "String", 'Url', '"http://obriylabs.com.ua/"'
-        //buildConfigField "String", 'DynamicUrl', '"http://obriylabs.com.ua/data/updateDatabase.json"' todo
-
     }
     buildTypes {
         release {
@@ -72,7 +69,7 @@ buildscript {
     ext.lifecycleVersion = "1.1.1"
     ext.coroutineVersion = "1.0.0"
     ext.roomVersion = "1.1.1"
-    ext.daggerVersion = "2.16"
+    ext.daggerVersion = "2.20"
     ext.gsonVersion = "2.8.5"
 }
 
