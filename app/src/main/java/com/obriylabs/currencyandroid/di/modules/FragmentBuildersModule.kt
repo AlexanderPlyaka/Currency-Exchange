@@ -1,7 +1,7 @@
 package com.obriylabs.currencyandroid.di.modules
 
-import com.obriylabs.currencyandroid.ui.fragments.map.MapsFragment
-import com.obriylabs.currencyandroid.ui.fragments.start.StartFragment
+import com.obriylabs.currencyandroid.ui.MapsFragment
+import com.obriylabs.currencyandroid.ui.StartFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

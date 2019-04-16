@@ -20,13 +20,14 @@ abstract class BaseFragment<VM : ViewModel>(@LayoutRes private val viewId: Int) 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        @Suppress("UNCHECKED_CAST")
         viewModel = model<ViewModel>() as VM
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         // Inflate the layout for this fragment
-        return inflater.inflate(viewId, container, false)
-    }
+        inflater.inflate(viewId, container, false)
+
 
     private inline fun <reified T : ViewModel> model(): T =
             ViewModelProviders.of(this, viewModelFactory).get(T::class.java)

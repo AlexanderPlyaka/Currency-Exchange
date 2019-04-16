@@ -1,4 +1,4 @@
-package com.obriylabs.currencyandroid.ui.fragments.map
+package com.obriylabs.currencyandroid.ui
 
 import android.app.Activity
 import android.location.Location
@@ -18,6 +18,7 @@ import com.obriylabs.currencyandroid.R
 import com.obriylabs.currencyandroid.ui.base.BaseFragment
 import com.obriylabs.currencyandroid.extension.logD
 import com.obriylabs.currencyandroid.extension.logE
+import com.obriylabs.currencyandroid.viewmodel.MapsViewModel
 
 class MapsFragment : BaseFragment<MapsViewModel>(R.layout.maps_fragment), OnMapReadyCallback {
 
@@ -72,7 +73,7 @@ class MapsFragment : BaseFragment<MapsViewModel>(R.layout.maps_fragment), OnMapR
     }
 
     /**
-     * Manipulates the map when it's available.
+     * Manipulates the map when it'success available.
      * This callback is triggered when the map is ready to be used.
      */
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -86,7 +87,7 @@ class MapsFragment : BaseFragment<MapsViewModel>(R.layout.maps_fragment), OnMapR
     }
 
     /**
-     * Gets the current location of the device, and positions the map's camera.
+     * Gets the current location of the device, and positions the map'success camera.
      */
     private fun getDeviceLocation() {
         /*
@@ -102,7 +103,7 @@ class MapsFragment : BaseFragment<MapsViewModel>(R.layout.maps_fragment), OnMapR
                     mCameraPosition = googleMap?.cameraPosition
 
                     if (task.isSuccessful && mCameraPosition != null) {
-                        // Set the map's camera position to the current location of the device.
+                        // Set the map'success camera position to the current location of the device.
                         mLastKnownLocation = task.result
 
                         val cameraUpdate: CameraUpdate = CameraUpdateFactory.newLatLngZoom(
@@ -115,7 +116,7 @@ class MapsFragment : BaseFragment<MapsViewModel>(R.layout.maps_fragment), OnMapR
                         googleMap?.animateCamera(cameraUpdate)
                     } else {
                         this.logD("Current location is null. Using defaults.")
-                        this.logE("Exception: %s", task.exception)
+                        this.logE("Exception: %success", task.exception)
                         val cameraUpdate: CameraUpdate = CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM)
 
                         googleMap?.moveCamera(CameraUpdateFactory
@@ -126,12 +127,12 @@ class MapsFragment : BaseFragment<MapsViewModel>(R.layout.maps_fragment), OnMapR
                 }
             })
         } catch (e: SecurityException) {
-            logE("Exception: %s", e.message)
+            logE("Exception: %success", e.message)
         }
     }
 
     /**
-     * Updates the map's UI settings based on whether the user has granted location permission.
+     * Updates the map'success UI settings based on whether the user has granted location permission.
      */
     private fun updateLocationUI() {
         googleMap ?: return
@@ -140,7 +141,7 @@ class MapsFragment : BaseFragment<MapsViewModel>(R.layout.maps_fragment), OnMapR
             googleMap?.isMyLocationEnabled = true
             googleMap?.uiSettings?.isMyLocationButtonEnabled = true
         } catch (e: SecurityException) {
-            logE("Exception: %s", e.message)
+            logE("Exception: %success", e.message)
         }
     }
 

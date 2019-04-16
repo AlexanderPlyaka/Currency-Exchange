@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
 import com.obriylabs.currencyandroid.CurrencyExchangeApp
 import com.obriylabs.currencyandroid.di.components.DaggerAppComponent
+import com.obriylabs.currencyandroid.di.modules.AppModule
 import dagger.android.AndroidInjection
 import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
@@ -18,7 +19,11 @@ import dagger.android.support.HasSupportFragmentInjector
 object AppInjector {
 
     fun init(app: CurrencyExchangeApp) {
-        DaggerAppComponent.builder().application(app).build().inject(app)
+        DaggerAppComponent
+                .builder()
+                .application(app)
+                .applicationModule(AppModule(app))
+                .build().inject(app)
 
         app.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
 

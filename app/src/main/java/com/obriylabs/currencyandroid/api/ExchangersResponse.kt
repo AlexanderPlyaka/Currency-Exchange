@@ -4,7 +4,7 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Index
 import android.arch.persistence.room.TypeConverters
 import com.google.gson.annotations.SerializedName
-import com.obriylabs.currencyandroid.db.ExchangersTypeConverter
+import com.obriylabs.currencyandroid.room.ExchangersTypeConverter
 
 
 data class ExchangersResponse(

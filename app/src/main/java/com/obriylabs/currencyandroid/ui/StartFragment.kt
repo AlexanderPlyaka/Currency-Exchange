@@ -1,8 +1,7 @@
-package com.obriylabs.currencyandroid.ui.fragments.start
+package com.obriylabs.currencyandroid.ui
 
 import android.Manifest
 import android.app.Activity
-import android.arch.lifecycle.Observer
 import android.content.pm.PackageManager
 import android.widget.Toast
 
@@ -15,6 +14,7 @@ import android.net.Uri
 import android.provider.Settings
 import android.support.v4.content.PermissionChecker.checkCallingOrSelfPermission
 import androidx.navigation.Navigation
+import com.obriylabs.currencyandroid.viewmodel.StartViewModel
 
 
 class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
@@ -37,10 +37,12 @@ class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
     }
 
     private fun loadData() {
-        viewModel.exchangers.observe(this, Observer { repos ->
+        viewModel.getListOfExchangers()
+        view?.let { Navigation.findNavController(it).navigate(R.id.mapsFragment) }
+        /*viewModel.getExchangers.observe(this, Observer { repos ->
             if (repos?.data?.isNotEmpty() == true)
                 view?.let { Navigation.findNavController(it).navigate(R.id.mapsFragment) }
-        })
+        })*/
     }
 
     /**

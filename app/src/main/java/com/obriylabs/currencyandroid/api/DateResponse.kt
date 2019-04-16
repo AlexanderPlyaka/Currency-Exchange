@@ -7,4 +7,12 @@ data class DateResponse(
         val date: String,
         @SerializedName("filePath")
         val filePath: String
-)
+) {
+
+    companion object {
+        fun empty() = DateResponse("", "")
+    }
+
+    fun toDateResponse() = DateResponse(date, filePath)
+
+}

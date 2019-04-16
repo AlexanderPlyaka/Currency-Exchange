@@ -1,10 +1,9 @@
 package com.obriylabs.currencyandroid.api
 
-import kotlinx.coroutines.Deferred
+import okhttp3.ResponseBody
 import retrofit2.http.GET
 import retrofit2.http.Url
-import okhttp3.ResponseBody
-import retrofit2.Response
+import retrofit2.Call
 
 /**
  * REST API access points
@@ -12,11 +11,11 @@ import retrofit2.Response
 interface ExchangersService {
 
     // a resource relative to your base URL
-    @GET("data/updateDatabase.json") //todo or data/data.dat
-    fun downloadFileWithFixedUrl(): Deferred<Response<DateResponse>>
+    @GET("data/updateDatabase.json")
+    fun downloadFileWithFixedUrl(): Call<DateResponse>
 
     // using a dynamic URL
     @GET
-    fun downloadFileWithDynamicUrl(@Url fileUrl: String?): Deferred<Response<ResponseBody>>
+    fun downloadFileWithDynamicUrl(@Url fileUrl: String?): Call<ResponseBody>
 
 }

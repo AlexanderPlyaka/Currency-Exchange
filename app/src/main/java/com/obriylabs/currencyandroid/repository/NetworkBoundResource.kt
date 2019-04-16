@@ -1,110 +1,48 @@
 package com.obriylabs.currencyandroid.repository
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
-import android.support.annotation.MainThread
-import android.support.annotation.WorkerThread
-import com.obriylabs.currencyandroid.api.ApiEmptyResponse
-import com.obriylabs.currencyandroid.api.ApiErrorResponse
-import com.obriylabs.currencyandroid.api.ApiResponse
-import com.obriylabs.currencyandroid.api.ApiSuccessResponse
-import com.obriylabs.currencyandroid.vo.Resource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.obriylabs.currencyandroid.api.DateResponse
+import com.obriylabs.currencyandroid.api.ExchangersResponse
+import com.obriylabs.currencyandroid.api.ExchangersService
+import com.obriylabs.currencyandroid.room.ExchangersDao
+import com.obriylabs.currencyandroid.utils.Elector
+import com.obriylabs.currencyandroid.exception.Failure
+import com.obriylabs.currencyandroid.utils.NetworkHandler
+import okhttp3.ResponseBody
+import retrofit2.Call
+import javax.inject.Inject
 
-/**
- * A generic class that can provide a resource backed by both the sqlite database and the network.
- *ы
- * @param <ResultType>
- * @param <RequestType>
-</RequestType></ResultType> */
-abstract class NetworkBoundResource<ResultType, RequestType>
-@MainThread constructor() { //private val appExecutors: AppExecutors
+class NetworkBoundResource
+@Inject constructor(private val networkHandler: NetworkHandler,
+                    private val service: ExchangersService,
+                    private val exchangersDao: ExchangersDao) : ExchangersRepository {
 
-    private val result = MediatorLiveData<Resource<ResultType>>()
+    override fun getDatabaseDate(): Elector<Failure, DateResponse> {
+        return when (networkHandler.isConnected) {
+            true -> request(service.downloadFileWithFixedUrl(), { it.toDateResponse() }, DateResponse.empty())
+            false, null -> Elector.Error(Failure.NetworkConnection)
+        }
+    }
 
-    init {
-        result.value = Resource.loading(null)
-        @Suppress("LeakingThis")
-        val dbSource = loadFromDb()
-        result.addSource(dbSource) { data ->
-            result.removeSource(dbSource)
-            if (shouldFetch(data)) {
-                fetchFromNetwork(dbSource)
-            } else {
-                result.addSource(dbSource) { newData ->
-                    setValue(Resource.success(newData))
-                }
+    override fun getExchangers(filePath: String): Elector<Failure, ResponseBody> {
+        return when (networkHandler.isConnected) {
+            true -> request(service.downloadFileWithDynamicUrl(filePath), { it }, ResponseBody.create(null, byteArrayOf()))
+            false, null -> Elector.Error(Failure.NetworkConnection)
+        }
+    }
+
+    override fun saveExchangers(item: List<ExchangersResponse.Result>) {
+        exchangersDao.insert(item)
+    }
+
+    private fun <T, R> request(call: Call<T>, transform: (T) -> R, default: T): Elector<Failure, R> {
+        return try {
+            val response = call.execute()
+            when (response.isSuccessful) {
+                true -> Elector.Success(transform((response.body() ?: default)))
+                false -> Elector.Error(Failure.ServerError)
             }
+        } catch (exception: Throwable) {
+            Elector.Error(Failure.ServerError)
         }
     }
-
-    @MainThread
-    private fun setValue(newValue: Resource<ResultType>) {
-        if (result.value != newValue) {
-            result.value = newValue
-        }
-    }
-
-    private fun fetchFromNetwork(dbSource: LiveData<ResultType>) {
-        val apiResponse = createCall()
-        // we re-attach dbSource as a new source, it will dispatch its latest value quickly
-        result.addSource(dbSource) { newData ->
-            setValue(Resource.loading(newData))
-        }
-        result.addSource(apiResponse) { response ->
-            result.removeSource(apiResponse)
-            result.removeSource(dbSource)
-            when (response) {
-                is ApiSuccessResponse -> {
-                    GlobalScope.launch(Dispatchers.IO) { //appExecutors.diskIO().execute {
-                        saveCallResult(processResponse(response))
-                        withContext(Dispatchers.Main) { //appExecutors.mainThread().execute {
-                            // we specially request a new live data,
-                            // otherwise we will get immediately last cached value,
-                            // which may not be updated with latest results received from network.
-                            result.addSource(loadFromDb()) { newData ->
-                                setValue(Resource.success(newData))
-                            }
-                        }
-                    }
-                }
-                is ApiEmptyResponse -> {
-                    GlobalScope.launch(Dispatchers.Main) { //appExecutors.mainThread().execute {
-                        // reload from disk whatever we had
-                        result.addSource(loadFromDb()) { newData ->
-                            setValue(Resource.success(newData))
-                        }
-                    }
-                }
-                is ApiErrorResponse -> {
-                    onFetchFailed()
-                    result.addSource(dbSource) { newData ->
-                        setValue(Resource.error(response.errorMessage, newData))
-                    }
-                }
-            }
-        }
-    }
-
-    protected open fun onFetchFailed() {}
-
-    fun asLiveData() = result as LiveData<Resource<ResultType>>
-
-    @WorkerThread
-    protected open fun processResponse(response: ApiSuccessResponse<RequestType>) = response.body
-
-    @WorkerThread
-    protected abstract fun saveCallResult(item: RequestType)
-
-    @MainThread
-    protected abstract fun shouldFetch(data: ResultType?): Boolean
-
-    @MainThread
-    protected abstract fun loadFromDb(): LiveData<ResultType>
-
-    @MainThread
-    protected abstract fun createCall(): LiveData<ApiResponse<RequestType>>
 }

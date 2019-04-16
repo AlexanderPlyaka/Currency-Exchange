@@ -1,4 +1,4 @@
-package com.obriylabs.currencyandroid.db
+package com.obriylabs.currencyandroid.room
 
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
