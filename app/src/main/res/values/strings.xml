@@ -7,4 +7,14 @@
     <string name="option_get_place">Get place</string>
     <string name="pick_place">Choose a place</string>
 
+    <string name="storage_perm_denied">"Storage Permissions denied."</string>
+    <string name="storage_perm_not_granted">"Storage permission isn't granted."</string>
+    <string name="storage_perm_files_count">"Storage permission is needed to show files count."</string>
+    <string name="open_perm">"Open Permissions and grant the Storage permission."</string>
+
+    <string name="failure_network_connection">No Network Connection</string>
+    <string name="failure_server_error">Server Error</string>
+    <string name="failure_file_error">File not found</string>
+    <string name="failure_database_error">Database is empty</string>
+
 </resources>

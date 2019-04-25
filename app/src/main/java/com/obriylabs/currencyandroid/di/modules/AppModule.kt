@@ -5,12 +5,14 @@ import android.arch.persistence.room.Room
 import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.obriylabs.currencyandroid.CurrencyExchangeApp
-import com.obriylabs.currencyandroid.api.ExchangersService
-import com.obriylabs.currencyandroid.room.ExchangersDb
-import com.obriylabs.currencyandroid.room.ExchangersDao
-import com.obriylabs.currencyandroid.repository.ExchangersRepository
-import com.obriylabs.currencyandroid.repository.NetworkBoundResource
-import com.obriylabs.currencyandroid.utils.SecretKeys
+import com.obriylabs.currencyandroid.data.api.ExchangersService
+import com.obriylabs.currencyandroid.data.room.ExchangersDb
+import com.obriylabs.currencyandroid.data.room.ExchangersDao
+import com.obriylabs.currencyandroid.data.repository.INetworkRepository
+import com.obriylabs.currencyandroid.data.repository.NetworkRepositoryImpl
+import com.obriylabs.currencyandroid.data.storage.ExchangersFileHandlerImpl
+import com.obriylabs.currencyandroid.data.storage.IFileHandler
+import com.obriylabs.currencyandroid.domain.SecretKeys
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -51,7 +53,7 @@ class AppModule(private val application: CurrencyExchangeApp) {
     @Provides
     fun provideDb(app: Application): ExchangersDb {
         return Room
-                .databaseBuilder(app, ExchangersDb::class.java, "getExchangers.db")
+                .databaseBuilder(app, ExchangersDb::class.java, "exchangers.db")
                 .fallbackToDestructiveMigration()
                 .build()
     }
@@ -62,6 +64,10 @@ class AppModule(private val application: CurrencyExchangeApp) {
 
     @Singleton
     @Provides
-    fun provideMoviesRepository(dataSource: NetworkBoundResource): ExchangersRepository = dataSource
+    fun provideNetworkRepository(dataSource: NetworkRepositoryImpl): INetworkRepository = dataSource
+
+    @Singleton
+    @Provides
+    fun provideFileHandler(dataSource: ExchangersFileHandlerImpl): IFileHandler = dataSource
 
 }

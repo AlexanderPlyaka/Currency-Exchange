@@ -2,6 +2,7 @@ package com.obriylabs.currencyandroid.di
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
@@ -23,7 +24,8 @@ object AppInjector {
                 .builder()
                 .application(app)
                 .applicationModule(AppModule(app))
-                .build().inject(app)
+                .build()
+                .inject(app)
 
         app.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
 
@@ -53,7 +55,7 @@ object AppInjector {
             activity.supportFragmentManager
                     .registerFragmentLifecycleCallbacks(
                             object : FragmentManager.FragmentLifecycleCallbacks() {
-                                override fun onFragmentCreated(fm: FragmentManager, fragment: Fragment, savedInstanceState: Bundle?) {
+                                override fun onFragmentPreAttached(fm: FragmentManager, fragment: Fragment, context: Context) {
                                     if (fragment is Injectable) {
                                         AndroidSupportInjection.inject(fragment)
                                     }

@@ -3,9 +3,9 @@ package com.obriylabs.currencyandroid.di.modules
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.obriylabs.currencyandroid.di.ViewModelKey
-import com.obriylabs.currencyandroid.viewmodel.MapsViewModel
-import com.obriylabs.currencyandroid.viewmodel.StartViewModel
-import com.obriylabs.currencyandroid.viewmodel.ViewModelFactory
+import com.obriylabs.currencyandroid.presentation.viewmodel.MapsViewModel
+import com.obriylabs.currencyandroid.presentation.viewmodel.StartViewModel
+import com.obriylabs.currencyandroid.presentation.viewmodel.ViewModelFactory
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

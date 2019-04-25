@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/startFragment"
-        android:name="com.obriylabs.currencyandroid.ui.StartFragment"
+        android:name="com.obriylabs.currencyandroid.presentation.ui.StartFragment"
         android:label="start_fragment"
         tools:layout="@layout/start_fragment" />
 
     <fragment
         android:id="@+id/mapsFragment"
-        android:name="com.obriylabs.currencyandroid.ui.MapsFragment"
+        android:name="com.obriylabs.currencyandroid.presentation.ui.MapsFragment"
         android:label="maps_fragment"
         tools:layout="@layout/maps_fragment" />
 
