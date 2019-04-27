@@ -1,12 +1,13 @@
 package com.obriylabs.currencyandroid.data.repository
 
-import com.obriylabs.currencyandroid.domain.entity.DataEntity
+import com.obriylabs.currencyandroid.domain.entity.SourceDbEntity
 import com.obriylabs.currencyandroid.data.api.ExchangersService
-import com.obriylabs.currencyandroid.data.room.Exchangers
+import com.obriylabs.currencyandroid.data.model.Exchangers
 import com.obriylabs.currencyandroid.domain.entity.ExchangersEntity
 import com.obriylabs.currencyandroid.data.room.ExchangersDao
 import com.obriylabs.currencyandroid.data.storage.IFileHandler
-import com.obriylabs.currencyandroid.domain.ReceivedData
+import com.obriylabs.currencyandroid.data.model.InputData
+import com.obriylabs.currencyandroid.data.model.SourceDb
 import com.obriylabs.currencyandroid.domain.Result
 import com.obriylabs.currencyandroid.domain.exception.Failure
 import com.obriylabs.currencyandroid.presentation.NetworkHandler
@@ -20,16 +21,16 @@ class NetworkRepositoryImpl
                     private val fileHandler: IFileHandler,
                     private val exchangersDao: ExchangersDao) : INetworkRepository {
 
-    override fun data(): Result<Failure, DataEntity> {
+    override fun source(): Result<Failure, SourceDb> {
         return when (networkHandler.isConnected) {
-            true -> request(service.fetchDataEntity(), { it }, DataEntity.empty())
+            true -> request(service.fetchDataEntity(), { it.toSourceDb() }, SourceDbEntity.empty())
             false, null -> Result.Error(Failure.NetworkConnection)
         }
     }
 
-    override fun exchangers(filePath: String): Result<Failure, ReceivedData> {
+    override fun exchangers(filePath: String): Result<Failure, InputData> {
         return when (networkHandler.isConnected) {
-            true -> request(service.fetchExchangersDatabase(filePath), { ReceivedData(it.bytes()) }, ResponseBody.create(null, byteArrayOf()))
+            true -> request(service.fetchExchangersDatabase(filePath), { InputData(it) }, InputData.empty())
             false, null -> Result.Error(Failure.NetworkConnection)
         }
     }
@@ -38,12 +39,20 @@ class NetworkRepositoryImpl
         return fileHandler.getExchangers(byteArray)
     }
 
-    override fun saveToDb(items: List<Exchangers>) {
-        exchangersDao.insert(items)
+    override fun saveExchangersToDb(items: List<Exchangers>) {
+        exchangersDao.insertAllExchangers(items)
     }
 
-    override fun fetchFromDb(): Result<Failure, List<Exchangers>> {
-        return requestDb(exchangersDao.getAll()) { it }
+    override fun saveSourceToDb(sourceDb: SourceDb) {
+        exchangersDao.insertSource(sourceDb)
+    }
+
+    override fun fetchExchangersFromDb(): Result<Failure, List<Exchangers>> {
+        return requestDb(exchangersDao.getAllExchangers()) { it }
+    }
+
+    override fun fetchDateFromDb(data: String): Result<Failure, SourceDb> {
+        return requestDb(exchangersDao.getDate(data)) { it } // TODO check
     }
 
     private fun <T, R> request(call: Call<T>, transform: (T) -> R, default: T): Result<Failure, R> {
@@ -58,10 +67,10 @@ class NetworkRepositoryImpl
         }
     }
 
-    private fun <T, R> requestDb(items: List<T>, transform: (List<T>) -> R): Result<Failure, R> {
-        return when(items.isNullOrEmpty()) {
-            false -> Result.Success(transform((items)))
-            true -> Result.Error(Failure.DatabaseError)
+    private fun <T, R> requestDb(items: T, transform: (T) -> R): Result<Failure, R> {
+        return when(items != null && items != emptyList<T>()) {
+            true -> Result.Success(transform((items)))
+            false -> Result.Error(Failure.DatabaseError)
         }
     }
 

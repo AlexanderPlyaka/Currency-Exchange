@@ -8,7 +8,6 @@ import com.obriylabs.currencyandroid.domain.SecretKeys
 import com.obriylabs.currencyandroid.domain.exception.Failure
 import net.lingala.zip4j.core.ZipFile
 import java.io.*
-import java.util.zip.ZipException
 import javax.inject.Inject
 
 class ExchangersFileHandlerImpl @Inject constructor() : IFileHandler {
@@ -47,11 +46,7 @@ class ExchangersFileHandlerImpl @Inject constructor() : IFileHandler {
             reader.close()
 
             Result.Success(exchangers)
-        } catch (ex: FileNotFoundException) {
-            Result.Error(Failure.FileError)
-        } catch (ex: ZipException) {
-            Result.Error(Failure.FileError)
-        } catch (ex: IOException) {
+        } catch (ex: Throwable) {
             Result.Error(Failure.FileError)
         }
     }

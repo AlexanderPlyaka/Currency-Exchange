@@ -10,6 +10,7 @@ sealed class Failure {
     object ServerError : Failure()
     object FileError : Failure()
     object DatabaseError : Failure()
+    object DateEquals : Failure()
 
     /** * Extend this class for feature specific failures.*/
     abstract class FeatureFailure: Failure()

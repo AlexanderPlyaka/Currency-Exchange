@@ -1,13 +1,14 @@
-package com.obriylabs.currencyandroid.data.room
+package com.obriylabs.currencyandroid.data.model
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Index
 import android.arch.persistence.room.TypeConverters
+import com.obriylabs.currencyandroid.data.room.ExchangersTypeConverter
 import com.obriylabs.currencyandroid.domain.entity.ExchangersEntity
 
 @TypeConverters(ExchangersTypeConverter::class)
-@Entity(indices = [Index("objectId")], primaryKeys = ["objectId"])
+@Entity(tableName = "table_of_exchangers", indices = [Index("objectId")], primaryKeys = ["objectId"])
 data class Exchangers(
         @ColumnInfo(name = "created_at")
         val createdAt: String,
@@ -30,6 +31,7 @@ data class Exchangers(
         @ColumnInfo(name = "currency_working_time")
         val currencyWorkingTime: String,
         val objectId: String,
+        @ColumnInfo(name = "region_id")
         val regionId: Int,
         @ColumnInfo(name = "updated_at")
         val updatedAt: String

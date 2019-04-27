@@ -1,6 +1,6 @@
 package com.obriylabs.currencyandroid.data.api
 
-import com.obriylabs.currencyandroid.domain.entity.DataEntity
+import com.obriylabs.currencyandroid.domain.entity.SourceDbEntity
 import okhttp3.ResponseBody
 import retrofit2.http.GET
 import retrofit2.http.Url
@@ -15,7 +15,7 @@ interface ExchangersService {
     }
 
     // a resource relative to your base URL
-    @GET(UPDATE) fun fetchDataEntity(): Call<DataEntity>
+    @GET(UPDATE) fun fetchDataEntity(): Call<SourceDbEntity>
 
     // using a dynamic URL
     @GET fun fetchExchangersDatabase(@Url fileUrl: String?): Call<ResponseBody>

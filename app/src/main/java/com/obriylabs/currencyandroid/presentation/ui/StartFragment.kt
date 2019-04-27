@@ -15,13 +15,11 @@ import android.provider.Settings
 import android.support.v4.content.PermissionChecker.checkCallingOrSelfPermission
 import android.view.View
 import androidx.navigation.Navigation
-import com.obriylabs.currencyandroid.domain.ReceivedData
 import com.obriylabs.currencyandroid.domain.entity.ExchangersEntity
 import com.obriylabs.currencyandroid.domain.exception.Failure
 import com.obriylabs.currencyandroid.extension.failure
 import com.obriylabs.currencyandroid.extension.observe
 import com.obriylabs.currencyandroid.presentation.viewmodel.StartViewModel
-
 
 class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
 
@@ -37,7 +35,7 @@ class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = model {
-            observe(responseBody, ::changedData)
+            observe(responseBody) { changedData() }
             observe(listOfExchangers, ::changedData)
             failure(failure, ::handleFailure)
         }
@@ -48,11 +46,11 @@ class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
         if (!isPermissionGranted()) {
             requestPermissionWithRationale()
         } else {
-            Navigation.findNavController(view).navigate(R.id.mapsFragment)
+            viewModel.loadDataExchangers()
         }
     }
 
-    private fun changedData(receivedData: ReceivedData?) {
+    private fun changedData() {
         viewModel.loadListExchangers()
     }
 
@@ -101,7 +99,6 @@ class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
     /**
      * Handles the result of the request for storage permissions.
      */
-    //4
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         var allowed = true
 
@@ -161,6 +158,9 @@ class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
             is Failure.NetworkConnection -> { notify(R.string.failure_network_connection); close() }
             is Failure.ServerError -> { notify(R.string.failure_server_error); close() }
             is Failure.FileError -> { notify(R.string.failure_file_error); close() }
+            is Failure.DateEquals -> {
+                view?.let { Navigation.findNavController(it).navigate(R.id.mapsFragment) } // TODO
+            }
         }
     }
 }

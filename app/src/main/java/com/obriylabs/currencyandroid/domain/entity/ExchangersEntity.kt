@@ -1,7 +1,7 @@
 package com.obriylabs.currencyandroid.domain.entity
 
 import com.google.gson.annotations.SerializedName
-import com.obriylabs.currencyandroid.data.room.Exchangers
+import com.obriylabs.currencyandroid.data.model.Exchangers
 
 data class ExchangersEntity(
         @SerializedName("results")
