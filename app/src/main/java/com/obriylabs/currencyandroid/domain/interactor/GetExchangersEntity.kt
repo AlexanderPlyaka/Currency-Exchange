@@ -7,8 +7,8 @@ import com.obriylabs.currencyandroid.domain.entity.ExchangersEntity
 import com.obriylabs.currencyandroid.domain.exception.Failure
 import javax.inject.Inject
 
-class GetExchangers
-@Inject constructor(private val networkRepository: INetworkRepository) : UseCase<ExchangersEntity, GetExchangers.Params> {
+class GetExchangersEntity
+@Inject constructor(private val networkRepository: INetworkRepository) : UseCase<ExchangersEntity, GetExchangersEntity.Params> {
 
     override suspend fun run(params: Params) : Result<Failure, ExchangersEntity> {
         return networkRepository.fileHandler(params.inputData.responseBody.bytes())

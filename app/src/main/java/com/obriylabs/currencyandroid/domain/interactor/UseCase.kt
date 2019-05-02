@@ -24,5 +24,14 @@ interface UseCase<out Type, in Params> where Type : Any {
         GlobalScope.launch(Dispatchers.Main) { onResult(job.await()) }
     }
 
+    interface JustRun<Params> {
+
+        suspend fun run(params: Params)
+
+        operator fun invoke(params: Params) {
+            GlobalScope.launch(Dispatchers.IO) { run(params) }
+        }
+    }
+
     class None
 }

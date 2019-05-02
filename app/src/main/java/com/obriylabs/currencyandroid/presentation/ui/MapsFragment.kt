@@ -3,9 +3,11 @@ package com.obriylabs.currencyandroid.presentation.ui
 import android.app.Activity
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
@@ -15,10 +17,15 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 
 import com.obriylabs.currencyandroid.R
+import com.obriylabs.currencyandroid.domain.exception.Failure
+import com.obriylabs.currencyandroid.extension.failure
 import com.obriylabs.currencyandroid.presentation.ui.base.BaseFragment
 import com.obriylabs.currencyandroid.extension.logD
 import com.obriylabs.currencyandroid.extension.logE
+import com.obriylabs.currencyandroid.extension.observe
 import com.obriylabs.currencyandroid.presentation.viewmodel.MapsViewModel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MapsFragment : BaseFragment<MapsViewModel>(R.layout.maps_fragment), OnMapReadyCallback {
 
@@ -38,6 +45,17 @@ class MapsFragment : BaseFragment<MapsViewModel>(R.layout.maps_fragment), OnMapR
         // not granted.
         private val mDefaultLocation = LatLng(50.449784, 30.523818)
         private const val DEFAULT_ZOOM: Float = 15f
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = model {
+            failure(failure, ::handleFailure)
+        }
+
+        GlobalScope.launch {
+            Log.d("asdasd", " ") // TODO see if the database is empty
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -142,6 +160,15 @@ class MapsFragment : BaseFragment<MapsViewModel>(R.layout.maps_fragment), OnMapR
             googleMap?.uiSettings?.isMyLocationButtonEnabled = true
         } catch (e: SecurityException) {
             logE("Exception: %success", e.message)
+        }
+    }
+
+    private fun handleFailure(failure: Failure?) {
+        when (failure) {
+            is Failure.NetworkConnection -> { notify(R.string.failure_network_connection); close() }
+            is Failure.DatabaseError -> {
+                 // TODO
+            }
         }
     }
 

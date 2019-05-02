@@ -42,7 +42,7 @@ class ExchangersFileHandlerImpl @Inject constructor() : IFileHandler {
             zipFile.extractAll("$path/Currency Exchange/")
 
             val reader = BufferedReader(FileReader("$path/Currency Exchange/data.txt"))
-            val exchangers = Gson().fromJson(reader, ExchangersEntity::class.java)
+            val exchangers: ExchangersEntity = Gson().fromJson(reader, ExchangersEntity::class.java)
             reader.close()
 
             Result.Success(exchangers)

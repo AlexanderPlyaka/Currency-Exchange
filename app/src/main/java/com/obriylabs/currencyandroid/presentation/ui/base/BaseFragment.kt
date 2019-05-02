@@ -33,7 +33,7 @@ abstract class BaseFragment<VM : ViewModel>(@LayoutRes private val viewId: Int) 
     internal fun firstTimeCreated(savedInstanceState: Bundle?) = savedInstanceState == null
 
     internal fun notify(@StringRes message: Int) =
-            activity?.let { Snackbar.make(it.findViewById(R.id.nav_host_fragment), message, Snackbar.LENGTH_SHORT).show() }
+            activity?.run { Snackbar.make(this.findViewById(R.id.nav_host_fragment), message, Snackbar.LENGTH_SHORT).show() }
 
     protected fun close() = fragmentManager?.popBackStack()
 

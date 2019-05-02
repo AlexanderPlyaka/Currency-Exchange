@@ -11,7 +11,6 @@ import com.obriylabs.currencyandroid.data.model.SourceDb
 import com.obriylabs.currencyandroid.domain.Result
 import com.obriylabs.currencyandroid.domain.exception.Failure
 import com.obriylabs.currencyandroid.presentation.NetworkHandler
-import okhttp3.ResponseBody
 import retrofit2.Call
 import javax.inject.Inject
 
@@ -73,10 +72,5 @@ class NetworkRepositoryImpl
             false -> Result.Error(Failure.DatabaseError)
         }
     }
-
-    private fun mapToExchangers(items: List<ExchangersEntity.Result>?)
-            : List<Exchangers> = items?.map { mapResultToExchangers(it) } ?: emptyList()
-
-    private fun mapResultToExchangers(item: ExchangersEntity.Result): Exchangers = item.toExchangers()
 
 }

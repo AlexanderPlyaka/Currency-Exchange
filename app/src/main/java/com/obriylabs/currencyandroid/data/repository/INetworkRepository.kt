@@ -3,8 +3,8 @@ package com.obriylabs.currencyandroid.data.repository
 import com.obriylabs.currencyandroid.data.model.Exchangers
 import com.obriylabs.currencyandroid.data.model.InputData
 import com.obriylabs.currencyandroid.data.model.SourceDb
-import com.obriylabs.currencyandroid.domain.entity.ExchangersEntity
 import com.obriylabs.currencyandroid.domain.Result
+import com.obriylabs.currencyandroid.domain.entity.ExchangersEntity
 import com.obriylabs.currencyandroid.domain.exception.Failure
 
 interface INetworkRepository {

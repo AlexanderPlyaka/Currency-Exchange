@@ -12,10 +12,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.support.annotation.StringRes
 import android.support.v4.content.PermissionChecker.checkCallingOrSelfPermission
 import android.view.View
 import androidx.navigation.Navigation
-import com.obriylabs.currencyandroid.domain.entity.ExchangersEntity
 import com.obriylabs.currencyandroid.domain.exception.Failure
 import com.obriylabs.currencyandroid.extension.failure
 import com.obriylabs.currencyandroid.extension.observe
@@ -35,27 +35,28 @@ class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = model {
-            observe(responseBody) { changedData() }
-            observe(listOfExchangers, ::changedData)
+            observe(responseBody) { changedDate() }
+            /*observe(listOfExchangers) { changedData() }*/ // TODO
             failure(failure, ::handleFailure)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (!isPermissionGranted()) {
-            requestPermissionWithRationale()
-        } else {
+        if (isPermissionGranted()) {
             viewModel.loadDataExchangers()
+        } else {
+            requestPermissionWithRationale()
         }
     }
 
-    private fun changedData() {
+    private fun changedDate() {
         viewModel.loadListExchangers()
+        view?.run { Navigation.findNavController(this).navigate(R.id.mapsFragment) }
     }
 
-    private fun changedData(items: List<ExchangersEntity.Result>?) {
-        view?.let { Navigation.findNavController(it).navigate(R.id.mapsFragment) }
+    private fun changedData() {
+        view?.run { Navigation.findNavController(this).navigate(R.id.mapsFragment) }
     }
 
     /**
@@ -80,15 +81,20 @@ class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
         val permissionStorageStatus = shouldShowRequestPermissionRationale(permissions[0])
         val permissionLocationStatus = shouldShowRequestPermissionRationale(permissions[1])
 
-        if (permissionStorageStatus && permissionLocationStatus) {
-            activity?.let {
-                Snackbar.make(it.findViewById(R.id.nav_host_fragment), R.string.storage_perm_files_count, Snackbar.LENGTH_LONG)
-                        .setAction("GRANT") { requestPerms() }.show()
+        when {
+            permissionStorageStatus -> activity?.run {
+                notifyWithRationale(R.string.storage_perm_required) { requestPerms() }
             }
-        } else {
-            requestPerms()
+            permissionLocationStatus -> activity?.run {
+                notifyWithRationale(R.string.location_perm_necessary) { requestPerms() }
+            }
+            else -> requestPerms()
         }
     }
+
+    private fun notifyWithRationale(@StringRes message: Int, requestPerms: () -> Unit) =
+            activity?.run { Snackbar.make(this.findViewById(R.id.nav_host_fragment), message, Snackbar.LENGTH_LONG)
+                    .setAction("GRANT") { requestPerms() }.show() }
 
     private fun requestPerms() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -120,18 +126,19 @@ class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
         } else {
             // we will give warning to user that they haven't granted permissions.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-                    notify(R.string.storage_perm_denied)
-                } else {
-                    showNoStoragePermission()
+                when {
+                    shouldShowRequestPermissionRationale(permissions[0]) -> notify(R.string.storage_perm_denied)
+                    shouldShowRequestPermissionRationale(permissions[1]) -> notify(R.string.location_perm_denied)
+                    !shouldShowRequestPermissionRationale(permissions[0]) -> showNoPermission(R.string.storage_perm_not_granted)
+                    !shouldShowRequestPermissionRationale(permissions[1]) -> showNoPermission(R.string.location_perm_not_granted)
                 }
             }
         }
     }
 
-    private fun showNoStoragePermission() {
-        activity?.let {
-            Snackbar.make(it.findViewById(R.id.nav_host_fragment),R.string.storage_perm_not_granted, Snackbar.LENGTH_LONG)
+    private fun showNoPermission(@StringRes message: Int) {
+        activity?.run {
+            Snackbar.make(this.findViewById(R.id.nav_host_fragment), message, Snackbar.LENGTH_LONG)
                     .setAction("SETTINGS") {
                         openApplicationSettings()
                         notify(R.string.open_perm)
@@ -147,7 +154,11 @@ class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == PERMISSIONS_REQUEST) {
-            viewModel.loadDataExchangers() // TODO
+            if (isPermissionGranted()) {
+                viewModel.loadDataExchangers() // TODO
+            } else {
+                requestPermissionWithRationale()
+            }
             return
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -159,7 +170,7 @@ class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
             is Failure.ServerError -> { notify(R.string.failure_server_error); close() }
             is Failure.FileError -> { notify(R.string.failure_file_error); close() }
             is Failure.DateEquals -> {
-                view?.let { Navigation.findNavController(it).navigate(R.id.mapsFragment) } // TODO
+                view?.run { Navigation.findNavController(this).navigate(R.id.mapsFragment) } // TODO
             }
         }
     }
