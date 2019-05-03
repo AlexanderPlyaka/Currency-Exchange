@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.Navigation
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
@@ -24,8 +23,6 @@ import com.obriylabs.currencyandroid.extension.logD
 import com.obriylabs.currencyandroid.extension.logE
 import com.obriylabs.currencyandroid.extension.observe
 import com.obriylabs.currencyandroid.presentation.viewmodel.MapsViewModel
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class MapsFragment : BaseFragment<MapsViewModel>(R.layout.maps_fragment), OnMapReadyCallback {
 
@@ -50,11 +47,11 @@ class MapsFragment : BaseFragment<MapsViewModel>(R.layout.maps_fragment), OnMapR
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = model {
+            observe(listExchangers()) { changedList() }
             failure(failure, ::handleFailure)
         }
-
-        GlobalScope.launch {
-            Log.d("asdasd", " ") // TODO see if the database is empty
+        if (viewModel.listExchangers().value == null) {
+            viewModel.getListExchangersFromDb()
         }
     }
 
@@ -161,6 +158,10 @@ class MapsFragment : BaseFragment<MapsViewModel>(R.layout.maps_fragment), OnMapR
         } catch (e: SecurityException) {
             logE("Exception: %success", e.message)
         }
+    }
+
+    private fun changedList() {
+        Log.d("asdasd", " ${viewModel.listExchangers().value?.size}") // TODO see if the database is empty
     }
 
     private fun handleFailure(failure: Failure?) {

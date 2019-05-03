@@ -40,8 +40,8 @@ class AppModule(private val application: CurrencyExchangeApp) {
                 .create(ExchangersService::class.java)
     }
 
-    @Provides
     @Singleton
+    @Provides
     fun provideOkHttpClient(): OkHttpClient {
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
@@ -66,8 +66,8 @@ class AppModule(private val application: CurrencyExchangeApp) {
     @Provides
     fun provideNetworkRepository(dataSource: NetworkRepositoryImpl): INetworkRepository = dataSource
 
-    @Singleton
+    /*@Singleton
     @Provides
-    fun provideFileHandler(dataSource: ExchangersFileHandlerImpl): IFileHandler = dataSource
+    fun provideFileHandler(dataSource: ExchangersFileHandlerImpl): IFileHandler = dataSource*/
 
 }

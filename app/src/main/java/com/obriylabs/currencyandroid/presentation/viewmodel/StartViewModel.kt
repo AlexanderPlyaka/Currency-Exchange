@@ -1,37 +1,41 @@
 package com.obriylabs.currencyandroid.presentation.viewmodel
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import com.obriylabs.currencyandroid.data.model.InputData
-import com.obriylabs.currencyandroid.data.model.SourceDb
+import com.obriylabs.currencyandroid.data.model.ReceivedData
+import com.obriylabs.currencyandroid.data.model.DataOfExchangers
 import com.obriylabs.currencyandroid.domain.entity.ExchangersEntity
 import com.obriylabs.currencyandroid.domain.interactor.*
 import javax.inject.Inject
 
 class StartViewModel
 @Inject constructor(private val getDataExchangers: GetDataExchangers,
-                    private val getInputData: GetInputData,
+                    private val getReceivedData: GetReceivedData,
                     private val getExchangersEntity: GetExchangersEntity,
                     private val setExchangers: SetExchangers) : BaseViewModel() {
 
-    var responseBody: MutableLiveData<InputData> = MutableLiveData()
+    private var receivedData: MutableLiveData<ReceivedData> = MutableLiveData()
 
-    //var listOfExchangers: MutableLiveData<List<ExchangersEntity.Result>> = MutableLiveData()
+    fun loadDataOfExchangers() = getDataExchangers(UseCase.None()) { it.result(::handleFailure, ::handleDate) }
 
-    fun loadDataExchangers() = getDataExchangers(UseCase.None()) { it.result(::handleFailure, ::handleDate) }
-
-    fun loadListExchangers() = responseBody.value?.let { getExchangersEntity(GetExchangersEntity.Params(it)) { result -> result.result(::handleFailure, ::handleResult) } }
-
-    private fun handleDate(data: SourceDb) {
-        getInputData(GetInputData.Params(data)) { it.result(::handleFailure, ::handleResponse) }
+    fun loadListExchangers() = receivedData.value?.run {
+        getExchangersEntity(GetExchangersEntity.Params(this)) {
+            result -> result.result(::handleFailure, ::handleResult)
+        }
     }
 
-    private fun handleResponse(inputData: InputData) {
-        responseBody.value = inputData
+    private fun handleDate(data: DataOfExchangers) {
+        getReceivedData(GetReceivedData.Params(data)) { it.result(::handleFailure, ::handleResponse) }
+    }
+
+    private fun handleResponse(receivedData: ReceivedData) {
+        this.receivedData.value = receivedData
     }
 
     private fun handleResult(exchangers: ExchangersEntity) {
         setExchangers(SetExchangers.Params(exchangers.results))
-        //listOfExchangers.value = exchangers.results
     }
+
+    fun getReceivedData(): LiveData<ReceivedData> = receivedData
 
 }

@@ -35,8 +35,7 @@ class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = model {
-            observe(responseBody) { changedDate() }
-            /*observe(listOfExchangers) { changedData() }*/ // TODO
+            observe(getReceivedData()) { changedDate() }
             failure(failure, ::handleFailure)
         }
     }
@@ -44,19 +43,12 @@ class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (isPermissionGranted()) {
-            viewModel.loadDataExchangers()
+            if (viewModel.getReceivedData().value == null) {
+                viewModel.loadDataOfExchangers()
+            }
         } else {
             requestPermissionWithRationale()
         }
-    }
-
-    private fun changedDate() {
-        viewModel.loadListExchangers()
-        view?.run { Navigation.findNavController(this).navigate(R.id.mapsFragment) }
-    }
-
-    private fun changedData() {
-        view?.run { Navigation.findNavController(this).navigate(R.id.mapsFragment) }
     }
 
     /**
@@ -122,7 +114,7 @@ class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
         }
         if (allowed){
             //user granted all permissions we can perform our task.
-            viewModel.loadDataExchangers() // TODO
+            viewModel.loadDataOfExchangers() // TODO
         } else {
             // we will give warning to user that they haven't granted permissions.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -155,13 +147,18 @@ class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == PERMISSIONS_REQUEST) {
             if (isPermissionGranted()) {
-                viewModel.loadDataExchangers() // TODO
+                viewModel.loadDataOfExchangers() // TODO
             } else {
                 requestPermissionWithRationale()
             }
             return
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun changedDate() {
+        viewModel.loadListExchangers()
+        view?.run { Navigation.findNavController(this).navigate(R.id.mapsFragment) }
     }
 
     private fun handleFailure(failure: Failure?) {

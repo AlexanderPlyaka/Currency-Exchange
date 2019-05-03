@@ -1,26 +1,26 @@
 package com.obriylabs.currencyandroid.data.repository
 
 import com.obriylabs.currencyandroid.data.model.Exchangers
-import com.obriylabs.currencyandroid.data.model.InputData
-import com.obriylabs.currencyandroid.data.model.SourceDb
+import com.obriylabs.currencyandroid.data.model.ReceivedData
+import com.obriylabs.currencyandroid.data.model.DataOfExchangers
 import com.obriylabs.currencyandroid.domain.Result
 import com.obriylabs.currencyandroid.domain.entity.ExchangersEntity
 import com.obriylabs.currencyandroid.domain.exception.Failure
 
 interface INetworkRepository {
 
-    fun source() : Result<Failure, SourceDb>
+    fun fetchDataOfExchangers() : Result<Failure, DataOfExchangers>
 
-    fun exchangers(filePath: String) : Result<Failure, InputData>
+    fun exchangers(filePath: String) : Result<Failure, ReceivedData>
 
     fun fileHandler(byteArray: ByteArray) : Result<Failure, ExchangersEntity>
 
+    fun saveDataOfExchangersToDb(dataOfExchangers: DataOfExchangers)
+
     fun saveExchangersToDb(items: List<Exchangers>)
 
-    fun saveSourceToDb(sourceDb: SourceDb)
+    fun fetchDateFromDb(data: String): Result<Failure, DataOfExchangers>
 
     fun fetchExchangersFromDb() : Result<Failure, List<Exchangers>>
-
-    fun fetchDateFromDb(data: String): Result<Failure, SourceDb>
 
 }
