@@ -50,9 +50,7 @@ class MapsFragment : BaseFragment<MapsViewModel>(R.layout.maps_fragment), OnMapR
             observe(listExchangers()) { changedList() }
             failure(failure, ::handleFailure)
         }
-        if (viewModel.listExchangers().value == null) {
-            viewModel.getListExchangersFromDb()
-        }
+        viewModel.getListExchangersFromDb()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

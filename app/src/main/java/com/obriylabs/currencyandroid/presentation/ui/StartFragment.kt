@@ -16,6 +16,7 @@ import android.support.annotation.StringRes
 import android.support.v4.content.PermissionChecker.checkCallingOrSelfPermission
 import android.view.View
 import androidx.navigation.Navigation
+import com.obriylabs.currencyandroid.data.DateEquals
 import com.obriylabs.currencyandroid.domain.exception.Failure
 import com.obriylabs.currencyandroid.extension.failure
 import com.obriylabs.currencyandroid.extension.observe
@@ -43,9 +44,7 @@ class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (isPermissionGranted()) {
-            if (viewModel.getReceivedData().value == null) {
-                viewModel.loadDataOfExchangers()
-            }
+            viewModel.loadDataOfExchangers()
         } else {
             requestPermissionWithRationale()
         }
@@ -166,7 +165,7 @@ class StartFragment : BaseFragment<StartViewModel>(R.layout.start_fragment) {
             is Failure.NetworkConnection -> { notify(R.string.failure_network_connection); close() }
             is Failure.ServerError -> { notify(R.string.failure_server_error); close() }
             is Failure.FileError -> { notify(R.string.failure_file_error); close() }
-            is Failure.DateEquals -> {
+            is DateEquals -> {
                 view?.run { Navigation.findNavController(this).navigate(R.id.mapsFragment) } // TODO
             }
         }

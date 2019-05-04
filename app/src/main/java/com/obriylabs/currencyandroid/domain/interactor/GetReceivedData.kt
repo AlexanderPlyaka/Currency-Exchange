@@ -1,5 +1,6 @@
 package com.obriylabs.currencyandroid.domain.interactor
 
+import com.obriylabs.currencyandroid.data.DateEquals
 import com.obriylabs.currencyandroid.data.repository.INetworkRepository
 import com.obriylabs.currencyandroid.data.model.ReceivedData
 import com.obriylabs.currencyandroid.data.model.DataOfExchangers
@@ -20,7 +21,7 @@ class GetReceivedData
         networkRepository.fetchDateFromDb(params.data.date).result({ failure -> failure }, ::handleResultFromDb)
 
         return when (receivedDate) {
-            sdf.parse(savedDate) -> Result.Error(Failure.DateEquals)
+            sdf.parse(savedDate) -> Result.Error(DateEquals())
             else -> {
                 networkRepository.saveDataOfExchangersToDb(params.data)
                 networkRepository.exchangers(params.data.filePath)

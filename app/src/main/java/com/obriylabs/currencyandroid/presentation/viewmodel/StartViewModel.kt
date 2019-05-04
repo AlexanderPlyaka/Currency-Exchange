@@ -16,7 +16,11 @@ class StartViewModel
 
     private var receivedData: MutableLiveData<ReceivedData> = MutableLiveData()
 
-    fun loadDataOfExchangers() = getDataExchangers(UseCase.None()) { it.result(::handleFailure, ::handleDate) }
+    fun loadDataOfExchangers() {
+        if (receivedData.value == null) {
+            getDataExchangers(UseCase.None()) { it.result(::handleFailure, ::handleDate) }
+        }
+    }
 
     fun loadListExchangers() = receivedData.value?.run {
         getExchangersEntity(GetExchangersEntity.Params(this)) {

@@ -11,7 +11,11 @@ class MapsViewModel @Inject constructor(private val getExchangers: GetExchangers
 
     private var listExchangers: MutableLiveData<List<Exchangers>> = MutableLiveData()
 
-    fun getListExchangersFromDb() = getExchangers(UseCase.None()) { it.result(::handleFailure, ::handleResult) }
+    fun getListExchangersFromDb() {
+        if (listExchangers.value == null) {
+            getExchangers(UseCase.None()) { it.result(::handleFailure, ::handleResult) }
+        }
+    }
 
     private fun handleResult(exchangers: List<Exchangers>) {
         listExchangers.postValue(exchangers)
