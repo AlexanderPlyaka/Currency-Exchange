@@ -8,10 +8,8 @@ import com.obriylabs.currencyandroid.CurrencyExchangeApp
 import com.obriylabs.currencyandroid.data.api.ExchangersService
 import com.obriylabs.currencyandroid.data.room.ExchangersDb
 import com.obriylabs.currencyandroid.data.room.ExchangersDao
-import com.obriylabs.currencyandroid.data.repository.INetworkRepository
-import com.obriylabs.currencyandroid.data.repository.NetworkRepositoryImpl
-import com.obriylabs.currencyandroid.data.storage.ExchangersFileHandlerImpl
-import com.obriylabs.currencyandroid.data.storage.IFileHandler
+import com.obriylabs.currencyandroid.data.repository.IExchangersRepository
+import com.obriylabs.currencyandroid.data.repository.ExchangersRepositoryImpl
 import com.obriylabs.currencyandroid.domain.SecretKeys
 import dagger.Module
 import dagger.Provides
@@ -24,12 +22,12 @@ import javax.inject.Singleton
 @Module(includes = [ViewModelModule::class])
 class AppModule(private val application: CurrencyExchangeApp) {
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideApplicationContext(): Context = application
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideExchangersService(interceptor: OkHttpClient): ExchangersService {
         return Retrofit.Builder()
                 .baseUrl(SecretKeys.getUrl())
@@ -40,17 +38,16 @@ class AppModule(private val application: CurrencyExchangeApp) {
                 .create(ExchangersService::class.java)
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideOkHttpClient(): OkHttpClient {
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder().addInterceptor(interceptor).build()
     }
 
-
-    @Singleton
     @Provides
+    @Singleton
     fun provideDb(app: Application): ExchangersDb {
         return Room
                 .databaseBuilder(app, ExchangersDb::class.java, "exchangers.db")
@@ -58,16 +55,13 @@ class AppModule(private val application: CurrencyExchangeApp) {
                 .build()
     }
 
-    @Singleton
+
     @Provides
+    @Singleton
     fun provideExchangersDao(db: ExchangersDb): ExchangersDao = db.exchangersDao()
 
+    @Provides
     @Singleton
-    @Provides
-    fun provideNetworkRepository(dataSource: NetworkRepositoryImpl): INetworkRepository = dataSource
-
-    /*@Singleton
-    @Provides
-    fun provideFileHandler(dataSource: ExchangersFileHandlerImpl): IFileHandler = dataSource*/
+    fun provideNetworkRepository(dataSource: ExchangersRepositoryImpl): IExchangersRepository = dataSource
 
 }

@@ -10,6 +10,7 @@
     map:uiCompass="true"
     map:uiTiltGestures="false"
     map:uiZoomControls="true"
-    map:uiZoomGestures="true">
+    map:uiZoomGestures="true"
+    map:useViewLifecycle="true">
 
 </fragment>

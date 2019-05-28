@@ -30,6 +30,12 @@ abstract class BaseFragment<VM : ViewModel>(@LayoutRes private val viewId: Int) 
         return vm
     }
 
+    protected inline fun <reified T : ViewModel> modelActivity(body: T.() -> Unit): T? {
+        val vm = activity?.run { ViewModelProviders.of(this, viewModelFactory).get(T::class.java) }
+        vm?.body()
+        return vm
+    }
+
     internal fun firstTimeCreated(savedInstanceState: Bundle?) = savedInstanceState == null
 
     internal fun notify(@StringRes message: Int) =

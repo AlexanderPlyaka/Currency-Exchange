@@ -4,7 +4,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.obriylabs.currencyandroid.di.ViewModelKey
 import com.obriylabs.currencyandroid.presentation.viewmodel.MapsViewModel
-import com.obriylabs.currencyandroid.presentation.viewmodel.StartViewModel
+import com.obriylabs.currencyandroid.presentation.viewmodel.SharedViewModel
 import com.obriylabs.currencyandroid.presentation.viewmodel.ViewModelFactory
 import dagger.Binds
 import dagger.Module
@@ -15,8 +15,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(StartViewModel::class)
-    abstract fun bindStartViewModel(startViewModel: StartViewModel): ViewModel
+    @ViewModelKey(SharedViewModel::class)
+    abstract fun bindSharedViewModel(sharedViewModel: SharedViewModel): ViewModel
 
     @Binds
     @IntoMap

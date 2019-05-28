@@ -6,7 +6,7 @@ import com.obriylabs.currencyandroid.data.model.Exchangers
 import com.obriylabs.currencyandroid.domain.entity.ExchangersEntity
 import com.obriylabs.currencyandroid.data.room.ExchangersDao
 import com.obriylabs.currencyandroid.data.storage.IFileHandler
-import com.obriylabs.currencyandroid.data.model.ReceivedData
+import com.obriylabs.currencyandroid.data.model.ReceivedExchangers
 import com.obriylabs.currencyandroid.data.model.DataOfExchangers
 import com.obriylabs.currencyandroid.domain.Result
 import com.obriylabs.currencyandroid.domain.exception.Failure
@@ -16,11 +16,11 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NetworkRepositoryImpl
+class ExchangersRepositoryImpl
 @Inject constructor(private val networkHandler: NetworkHandler,
                     private val service: ExchangersService,
-                    private val fileHandler: IFileHandler,
-                    private val exchangersDao: ExchangersDao) : INetworkRepository {
+                    private val fileHandler: IFileHandler<ExchangersEntity>,
+                    private val exchangersDao: ExchangersDao) : IExchangersRepository {
 
     override fun fetchDataOfExchangers(): Result<Failure, DataOfExchangers> {
         return when (networkHandler.isConnected) {
@@ -29,15 +29,15 @@ class NetworkRepositoryImpl
         }
     }
 
-    override fun exchangers(filePath: String): Result<Failure, ReceivedData> {
+    override fun exchangers(filePath: String): Result<Failure, ReceivedExchangers> {
         return when (networkHandler.isConnected) {
-            true -> request(service.fetchExchangersDatabase(filePath), { ReceivedData(it) }, ReceivedData.empty())
+            true -> request(service.fetchExchangersDatabase(filePath), { ReceivedExchangers(it) }, ReceivedExchangers.empty())
             false, null -> Result.Error(Failure.NetworkConnection)
         }
     }
 
-    override fun fileHandler(byteArray: ByteArray): Result<Failure, ExchangersEntity> {
-        return fileHandler.getExchangers(byteArray)
+    override fun exchangersFileHandler(byteArray: ByteArray): Result<Failure, ExchangersEntity> {
+        return fileHandler.dataProcess(byteArray)
     }
 
     override fun saveDataOfExchangersToDb(dataOfExchangers: DataOfExchangers) {
@@ -49,7 +49,7 @@ class NetworkRepositoryImpl
     }
 
     override fun fetchDateFromDb(data: String): Result<Failure, DataOfExchangers> {
-        return requestDb(exchangersDao.getDate(data)) { it } // TODO check
+        return requestDb(exchangersDao.getDate(data)) { it }
     }
 
     override fun fetchExchangersFromDb(): Result<Failure, List<Exchangers>> {

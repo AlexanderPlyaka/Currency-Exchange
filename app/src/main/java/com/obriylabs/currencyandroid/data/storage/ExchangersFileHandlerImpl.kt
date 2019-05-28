@@ -10,9 +10,9 @@ import net.lingala.zip4j.core.ZipFile
 import java.io.*
 import javax.inject.Inject
 
-class ExchangersFileHandlerImpl @Inject constructor() : IFileHandler {
+class ExchangersFileHandlerImpl @Inject constructor() : IFileHandler<ExchangersEntity> {
 
-    override fun getExchangers(bytes: ByteArray?) : Result<Failure, ExchangersEntity> {
+    override fun dataProcess(bytes: ByteArray?) : Result<Failure, ExchangersEntity> {
         return try {
             val file: File = Environment.getExternalStorageDirectory()
             val path = file.absolutePath

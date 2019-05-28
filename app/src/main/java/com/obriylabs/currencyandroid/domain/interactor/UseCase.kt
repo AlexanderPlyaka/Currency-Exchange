@@ -2,10 +2,7 @@ package com.obriylabs.currencyandroid.domain.interactor
 
 import com.obriylabs.currencyandroid.domain.Result
 import com.obriylabs.currencyandroid.domain.exception.Failure
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 /**
  * Interface for a Use Case (Interactor in terms of Clean Architecture).
@@ -24,7 +21,7 @@ interface UseCase<out Type, in Params> where Type : Any {
         GlobalScope.launch(Dispatchers.Main) { onResult(job.await()) }
     }
 
-    interface JustRun<Params> {
+    interface JustRun<in Params> {
 
         suspend fun run(params: Params)
 

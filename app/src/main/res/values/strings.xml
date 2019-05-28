@@ -8,18 +8,27 @@
     <string name="pick_place">Choose a place</string>
 
     <!--Permission-->
-    <string name="storage_perm_denied">"Storage Permissions denied."</string>
-    <string name="location_perm_denied">"Location Permissions denied."</string>
-    <string name="storage_perm_not_granted">"Storage permission isn't granted."</string>
-    <string name="location_perm_not_granted">"Location permission isn't granted."</string>
-    <string name="storage_perm_required">"Permission for storage is required for access to exchangers."</string>
-    <string name="location_perm_necessary">"Permission to location is necessary to display the nearest exchangers."</string>
-    <string name="open_perm">"Open Permissions and grant the Storage permission."</string>
+    <string name="all_perm">"Permissions required to use the application"</string>
+    <string name="description_of_perm">"The following permissions are required to provide correct information about exchangers"</string>
+    <string name="storage_perm">"Permission for storage"</string>
+    <string name="location_perm">"Permission for location"</string>
+    <string name="storage_perm_required">"For quick information about exchangers, some of the information will be stored on the device."</string>
+    <string name="location_perm_necessary">"Permission to the location is necessary for accurate display of the nearest exchangers."</string>
+
+    <string name="perm_not_granted">"Permissions didn't granted"</string>
+    <string name="description_of_necessity_perm">"Unfortunately you did not provide the necessary permissions, we recommend confirming these permissions for the application to work correctly."</string>
+    <string name="perm_settings">"Please open the "Permissions" and grant the permissions."</string>
+    <string name="no_storage_perm">"No permission for storage"</string>
+    <string name="no_location_perm">"No permission for location"</string>
+    <string name="storage_perm_not_granted">"Storage permission isn't granted"</string>
+    <string name="location_perm_not_granted">"Location permission isn't granted"</string>
 
     <!--Error message-->
     <string name="failure_network_connection">No Network Connection</string>
     <string name="failure_server_error">Server Error</string>
     <string name="failure_file_error">File not found</string>
     <string name="failure_database_error">Database is empty</string>
+
+    <string name="work_time">Работает с %1$s - %2$s</string>
 
 </resources>

@@ -22,7 +22,7 @@ sealed class Result<out E, out S> {
     fun <E> error(value: E) = Error(value)
     fun <S> success(value: S) = Success(value)
 
-    fun result(fnE: (E) -> Any, fnS: (S) -> Any): Any =
+    inline fun result(fnE: (E) -> Any, fnS: (S) -> Any): Any =
             when (this) {
                 is Error -> fnE(value)
                 is Success -> fnS(value)
