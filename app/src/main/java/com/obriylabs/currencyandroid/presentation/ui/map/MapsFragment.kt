@@ -1,4 +1,4 @@
-package com.obriylabs.currencyandroid.presentation.ui
+package com.obriylabs.currencyandroid.presentation.ui.map
 
 import android.app.Activity
 import android.location.Address
@@ -21,7 +21,6 @@ import com.obriylabs.currencyandroid.presentation.ui.base.BaseFragment
 import com.obriylabs.currencyandroid.extension.logD
 import com.obriylabs.currencyandroid.extension.logE
 import com.obriylabs.currencyandroid.extension.observe
-import com.obriylabs.currencyandroid.presentation.viewmodel.MapsViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.clustering.Cluster
@@ -29,7 +28,7 @@ import com.obriylabs.currencyandroid.data.model.Exchangers
 import com.google.maps.android.clustering.ClusterManager
 import com.obriylabs.currencyandroid.data.model.ExchangersItem
 import com.google.android.gms.maps.model.Marker
-import com.obriylabs.currencyandroid.presentation.viewmodel.SharedViewModel
+import com.obriylabs.currencyandroid.presentation.viewmodel.SharedExchangersViewModel
 import kotlinx.android.synthetic.main.custom_info_window.view.*
 import java.lang.StringBuilder
 import java.util.*
@@ -40,7 +39,7 @@ class MapsFragment : BaseFragment<MapsViewModel>(R.layout.maps_fragment),
         ClusterManager.OnClusterClickListener<ExchangersItem>,
         ClusterManager.OnClusterItemClickListener<ExchangersItem> {
 
-    @Inject lateinit var sharedViewModel: SharedViewModel
+    @Inject lateinit var sharedViewModel: SharedExchangersViewModel
 
     private var googleMap: GoogleMap? = null
     // The entry point to the Fused Location Provider.

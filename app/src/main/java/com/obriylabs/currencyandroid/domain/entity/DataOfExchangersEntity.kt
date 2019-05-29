@@ -3,7 +3,7 @@ package com.obriylabs.currencyandroid.domain.entity
 import com.google.gson.annotations.SerializedName
 import com.obriylabs.currencyandroid.data.model.DataOfExchangers
 
-data class DataExchangersEntity(
+data class DataOfExchangersEntity(
         @SerializedName("date")
         val date: String,
         @SerializedName("filePath")
@@ -11,7 +11,7 @@ data class DataExchangersEntity(
 ) {
 
     companion object {
-        fun empty() = DataExchangersEntity("", "")
+        fun empty() = DataOfExchangersEntity("", "")
     }
 
     fun toDataOfExchangers() = DataOfExchangers(date, filePath)

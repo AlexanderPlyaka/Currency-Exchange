@@ -1,4 +1,4 @@
-package com.obriylabs.currencyandroid.presentation
+package com.obriylabs.currencyandroid.presentation.ui.start
 
 import android.Manifest
 import android.app.Activity
@@ -13,7 +13,7 @@ import android.support.v4.content.PermissionChecker
 import android.support.v7.app.AlertDialog
 import com.obriylabs.currencyandroid.R
 import com.obriylabs.currencyandroid.di.scopes.FragmentScope
-import com.obriylabs.currencyandroid.presentation.viewmodel.SharedViewModel
+import com.obriylabs.currencyandroid.presentation.viewmodel.SharedExchangersViewModel
 
 @FragmentScope
 class PermissionManager(private val fragment: Fragment) {
@@ -75,7 +75,7 @@ class PermissionManager(private val fragment: Fragment) {
         }
     }
 
-    fun permissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray, viewModel: SharedViewModel) {
+    fun permissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray, viewModel: SharedExchangersViewModel) {
         var allowed = true
         when(requestCode) {
             PERMISSIONS_REQUEST -> {
@@ -127,7 +127,7 @@ class PermissionManager(private val fragment: Fragment) {
         fragment.startActivityForResult(appSettingsIntent, PERMISSIONS_REQUEST)
     }
 
-    fun activityResult(requestCode: Int, viewModel: SharedViewModel) {
+    fun activityResult(requestCode: Int, viewModel: SharedExchangersViewModel) {
         if (requestCode == PERMISSIONS_REQUEST) {
             if (isPermissionGranted()) {
                 viewModel.loadDataOfExchangers()

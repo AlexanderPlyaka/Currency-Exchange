@@ -28,3 +28,17 @@ sealed class Result<out E, out S> {
                 is Success -> fnS(value)
             }
 }
+
+// Credits to Alex Hart -> https://proandroiddev.com/kotlins-nothing-type-946de7d464fb
+// Composes 2 functions
+fun <A, B, C> ((A) -> B).c(f: (B) -> C): (A) -> C = {
+    f(this(it))
+}
+
+fun <T, E, S> Result<E, S>.flatMap(fn: (S) -> Result<E, T>): Result<E, T> =
+        when (this) {
+            is Result.Error -> Result.Error(value)
+            is Result.Success -> fn(value)
+        }
+
+fun <T, E, S> Result<E, S>.map(fn: (S) -> (T)): Result<E, T> = this.flatMap(fn.c(::success))

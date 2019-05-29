@@ -1,6 +1,6 @@
 package com.obriylabs.currencyandroid.data.api
 
-import com.obriylabs.currencyandroid.domain.entity.DataExchangersEntity
+import com.obriylabs.currencyandroid.domain.entity.DataOfExchangersEntity
 import okhttp3.ResponseBody
 import retrofit2.http.GET
 import retrofit2.http.Url
@@ -14,10 +14,8 @@ interface ExchangersService {
         private const val UPDATE = "data/updateDatabase.json"
     }
 
-    // a resource relative to your base URL
-    @GET(UPDATE) fun fetchDataExchangersEntity(): Call<DataExchangersEntity>
+    @GET(UPDATE) fun fetchDataOfExchangersEntity(): Call<DataOfExchangersEntity>
 
-    // using a dynamic URL
     @GET fun fetchExchangersDatabase(@Url fileUrl: String?): Call<ResponseBody>
 
 }

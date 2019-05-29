@@ -2,8 +2,8 @@ package com.obriylabs.currencyandroid.di.modules
 
 import android.support.v4.app.Fragment
 import com.obriylabs.currencyandroid.di.scopes.FragmentScope
-import com.obriylabs.currencyandroid.presentation.PermissionManager
-import com.obriylabs.currencyandroid.presentation.ui.StartFragment
+import com.obriylabs.currencyandroid.presentation.ui.start.PermissionManager
+import com.obriylabs.currencyandroid.presentation.ui.start.StartFragment
 import dagger.Module
 import dagger.Provides
 
@@ -16,7 +16,6 @@ class StartFragmentModule {
 
     @Provides
     @FragmentScope
-    fun providePermissionManager(fragment: Fragment): PermissionManager {
-        return PermissionManager(fragment)
-    }
+    fun providePermissionManager(fragment: Fragment): PermissionManager = PermissionManager(fragment)
+
 }

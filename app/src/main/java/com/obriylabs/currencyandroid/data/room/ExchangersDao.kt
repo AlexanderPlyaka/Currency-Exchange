@@ -15,7 +15,7 @@ interface ExchangersDao {
     fun insertAllExchangers(exchangers: List<Exchangers>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUpdate(dataOfExchangers: DataOfExchangers)
+    fun insertAllDataOfExchangers(dataOfExchangers: DataOfExchangers)
 
     @Query("SELECT * FROM table_of_exchangers")
     fun getAllExchangers(): List<Exchangers>
@@ -27,6 +27,6 @@ interface ExchangersDao {
     fun deleteExchangers(exchangers: List<Exchangers>)
 
     @Delete
-    fun deleteSourceDb(dataOfExchangers: DataOfExchangers)
+    fun deleteDataOfExchangers(dataOfExchangers: DataOfExchangers)
 
 }

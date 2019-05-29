@@ -4,15 +4,15 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.obriylabs.currencyandroid.data.model.DataOfExchangers
 import com.obriylabs.currencyandroid.data.model.Exchangers
+import com.obriylabs.currencyandroid.data.model.ExchangersResult
 import com.obriylabs.currencyandroid.data.model.ReceivedExchangers
-import com.obriylabs.currencyandroid.domain.entity.ExchangersEntity
 import com.obriylabs.currencyandroid.domain.interactor.*
 import javax.inject.Inject
 
-class SharedViewModel
+class SharedExchangersViewModel
 @Inject constructor(private val getDataOfExchangers: GetDataOfExchangers,
                     private val getExchangersDb: GetExchangersDb,
-                    private val getExchangersEntity: GetExchangersEntity,
+                    private val getExchangersResult: GetExchangersResult,
                     private val getExchangers: GetExchangers): BaseViewModel() {
 
     private var exchangers: MutableLiveData<ReceivedExchangers> = MutableLiveData()
@@ -35,14 +35,14 @@ class SharedViewModel
     fun loadListExchangers() {
         if (listExchangers.value == null) {
             exchangers.value?.run {
-                getExchangersEntity(GetExchangersEntity.Params(this)) {
+                getExchangersResult(GetExchangersResult.Params(this)) {
                     it.result(::handleFailure, ::handleResult)
                 }
             }
         }
     }
 
-    private fun handleResult(exchangers: ExchangersEntity?) {
+    private fun handleResult(exchangers: ExchangersResult?) {
         if (exchangers != null) {
             getExchangers(GetExchangers.Params(exchangers.results)) {
                 it.result(::handleFailure, ::handleResult)

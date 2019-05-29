@@ -3,16 +3,14 @@ package com.obriylabs.currencyandroid.data.storage
 import android.os.Environment
 import com.google.gson.Gson
 import com.obriylabs.currencyandroid.domain.entity.ExchangersEntity
-import com.obriylabs.currencyandroid.domain.Result
 import com.obriylabs.currencyandroid.domain.SecretKeys
-import com.obriylabs.currencyandroid.domain.exception.Failure
 import net.lingala.zip4j.core.ZipFile
 import java.io.*
 import javax.inject.Inject
 
 class ExchangersFileHandlerImpl @Inject constructor() : IFileHandler<ExchangersEntity> {
 
-    override fun dataProcess(bytes: ByteArray?) : Result<Failure, ExchangersEntity> {
+    override fun dataProcess(bytes: ByteArray?) : ExchangersEntity {
         return try {
             val file: File = Environment.getExternalStorageDirectory()
             val path = file.absolutePath
@@ -43,11 +41,11 @@ class ExchangersFileHandlerImpl @Inject constructor() : IFileHandler<ExchangersE
 
             val reader = BufferedReader(FileReader("$path/Currency Exchange/data.txt"))
             val exchangers: ExchangersEntity = Gson().fromJson(reader, ExchangersEntity::class.java)
-            reader.close()
 
-            Result.Success(exchangers)
+            reader.close()
+            exchangers
         } catch (ex: Throwable) {
-            Result.Error(Failure.FileError)
+            throw Throwable(ex)
         }
     }
 }

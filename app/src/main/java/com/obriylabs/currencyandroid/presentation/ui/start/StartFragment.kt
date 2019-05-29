@@ -1,4 +1,4 @@
-package com.obriylabs.currencyandroid.presentation.ui
+package com.obriylabs.currencyandroid.presentation.ui.start
 
 import com.obriylabs.currencyandroid.R
 import com.obriylabs.currencyandroid.presentation.ui.base.BaseFragment
@@ -10,11 +10,10 @@ import com.obriylabs.currencyandroid.data.DateEquals
 import com.obriylabs.currencyandroid.domain.exception.Failure
 import com.obriylabs.currencyandroid.extension.failure
 import com.obriylabs.currencyandroid.extension.observe
-import com.obriylabs.currencyandroid.presentation.PermissionManager
-import com.obriylabs.currencyandroid.presentation.viewmodel.SharedViewModel
+import com.obriylabs.currencyandroid.presentation.viewmodel.SharedExchangersViewModel
 import javax.inject.Inject
 
-class StartFragment : BaseFragment<SharedViewModel>(R.layout.start_fragment) {
+class StartFragment : BaseFragment<SharedExchangersViewModel>(R.layout.start_fragment) {
 
     @Inject lateinit var permissionManager: PermissionManager
 

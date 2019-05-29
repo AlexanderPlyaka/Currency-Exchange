@@ -2,6 +2,7 @@ package com.obriylabs.currencyandroid.domain.entity
 
 import com.google.gson.annotations.SerializedName
 import com.obriylabs.currencyandroid.data.model.Exchangers
+import com.obriylabs.currencyandroid.data.model.ExchangersResult
 
 data class ExchangersEntity(
         @SerializedName("results")
@@ -59,4 +60,7 @@ data class ExchangersEntity(
                 regionId,
                 updatedAt)
     }
+
+    fun toExchangersResult() = ExchangersResult(results)
+
 }

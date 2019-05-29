@@ -1,6 +1,6 @@
 package com.obriylabs.currencyandroid.data.repository
 
-import com.obriylabs.currencyandroid.domain.entity.DataExchangersEntity
+import com.obriylabs.currencyandroid.domain.entity.DataOfExchangersEntity
 import com.obriylabs.currencyandroid.data.api.ExchangersService
 import com.obriylabs.currencyandroid.data.model.Exchangers
 import com.obriylabs.currencyandroid.domain.entity.ExchangersEntity
@@ -8,6 +8,7 @@ import com.obriylabs.currencyandroid.data.room.ExchangersDao
 import com.obriylabs.currencyandroid.data.storage.IFileHandler
 import com.obriylabs.currencyandroid.data.model.ReceivedExchangers
 import com.obriylabs.currencyandroid.data.model.DataOfExchangers
+import com.obriylabs.currencyandroid.data.model.ExchangersResult
 import com.obriylabs.currencyandroid.domain.Result
 import com.obriylabs.currencyandroid.domain.exception.Failure
 import com.obriylabs.currencyandroid.presentation.NetworkHandler
@@ -24,24 +25,24 @@ class ExchangersRepositoryImpl
 
     override fun fetchDataOfExchangers(): Result<Failure, DataOfExchangers> {
         return when (networkHandler.isConnected) {
-            true -> request(service.fetchDataExchangersEntity(), { it.toDataOfExchangers() }, DataExchangersEntity.empty())
+            true -> request(service.fetchDataOfExchangersEntity(), { it.toDataOfExchangers() }, DataOfExchangersEntity.empty())
             false, null -> Result.Error(Failure.NetworkConnection)
         }
     }
 
-    override fun exchangers(filePath: String): Result<Failure, ReceivedExchangers> {
+    override fun fetchExchangers(filePath: String): Result<Failure, ReceivedExchangers> {
         return when (networkHandler.isConnected) {
             true -> request(service.fetchExchangersDatabase(filePath), { ReceivedExchangers(it) }, ReceivedExchangers.empty())
             false, null -> Result.Error(Failure.NetworkConnection)
         }
     }
 
-    override fun exchangersFileHandler(byteArray: ByteArray): Result<Failure, ExchangersEntity> {
-        return fileHandler.dataProcess(byteArray)
+    override fun exchangersFileHandler(byteArray: ByteArray): Result<Failure, ExchangersResult> {
+        return requestFile(fileHandler.dataProcess(byteArray)) { it.toExchangersResult() }
     }
 
     override fun saveDataOfExchangersToDb(dataOfExchangers: DataOfExchangers) {
-        exchangersDao.insertUpdate(dataOfExchangers)
+        exchangersDao.insertAllDataOfExchangers(dataOfExchangers)
     }
 
     override fun saveExchangersToDb(items: List<Exchangers>) {
@@ -65,6 +66,17 @@ class ExchangersRepositoryImpl
             }
         } catch (exception: Throwable) {
             Result.Error(Failure.ServerError)
+        }
+    }
+
+    private fun <T, R> requestFile(file: T, transform: (T) -> R): Result<Failure, R> {
+        return try {
+            when(file != null) {
+                true -> Result.Success(transform((file)))
+                false -> Result.Error(Failure.FileError)
+            }
+        } catch (exception: Throwable) {
+            Result.Error(Failure.FileError)
         }
     }
 

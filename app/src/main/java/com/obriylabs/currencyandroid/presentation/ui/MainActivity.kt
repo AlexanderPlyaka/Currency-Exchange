@@ -4,6 +4,4 @@ import com.obriylabs.currencyandroid.R
 import com.obriylabs.currencyandroid.presentation.ui.base.BaseActivity
 
 
-class MainActivity : BaseActivity(R.layout.activity_main) {
-
-}
+class MainActivity : BaseActivity(R.layout.activity_main)

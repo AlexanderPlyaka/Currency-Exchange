@@ -1,4 +1,4 @@
-package com.obriylabs.currencyandroid.presentation.viewmodel
+package com.obriylabs.currencyandroid.presentation.ui.map
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
@@ -9,6 +9,7 @@ import com.obriylabs.currencyandroid.data.model.Exchangers
 import com.obriylabs.currencyandroid.data.model.ExchangersItem
 import com.obriylabs.currencyandroid.domain.interactor.GetSavedExchangers
 import com.obriylabs.currencyandroid.domain.interactor.UseCase
+import com.obriylabs.currencyandroid.presentation.viewmodel.BaseViewModel
 import javax.inject.Inject
 
 class MapsViewModel @Inject constructor(getExchangers: GetSavedExchangers) : BaseViewModel() {
