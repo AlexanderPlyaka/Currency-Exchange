@@ -10,6 +10,8 @@ import javax.inject.Inject
 
 class ExchangersFileHandlerImpl @Inject constructor() : IFileHandler<ExchangersEntity> {
 
+    private var reader: BufferedReader? = null
+
     override fun dataProcess(bytes: ByteArray?) : ExchangersEntity {
         return try {
             val file: File = Environment.getExternalStorageDirectory()
@@ -39,13 +41,12 @@ class ExchangersFileHandlerImpl @Inject constructor() : IFileHandler<ExchangersE
 
             zipFile.extractAll("$path/Currency Exchange/")
 
-            val reader = BufferedReader(FileReader("$path/Currency Exchange/data.txt"))
-            val exchangers: ExchangersEntity = Gson().fromJson(reader, ExchangersEntity::class.java)
-
-            reader.close()
-            exchangers
+            reader = BufferedReader(FileReader("$path/Currency Exchange/data.txt"))
+            Gson().fromJson(reader, ExchangersEntity::class.java)
         } catch (ex: Throwable) {
             throw Throwable(ex)
+        } finally {
+            reader?.close()
         }
     }
 }
