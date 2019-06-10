@@ -2,7 +2,6 @@ package com.obriylabs.currencyandroid
 
 import android.app.Activity
 import android.app.Application
-import android.content.Context
 import com.obriylabs.currencyandroid.di.AppInjector
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -19,13 +18,6 @@ class CurrencyExchangeApp : Application(), HasActivityInjector {
         instance = this
 
         AppInjector.init(this)
-
-        //UCEHandler.Builder(applicationContext).build()
-    }
-
-    override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(base)
-        //MultiDex.install(this)
     }
 
     override fun activityInjector(): AndroidInjector<Activity> = activityInjector
