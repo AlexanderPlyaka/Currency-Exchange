@@ -2,12 +2,14 @@ package com.obriylabs.currencyandroid.di
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
 import com.obriylabs.currencyandroid.CurrencyExchangeApp
 import com.obriylabs.currencyandroid.di.components.DaggerAppComponent
+import com.obriylabs.currencyandroid.di.modules.AppModule
 import dagger.android.AndroidInjection
 import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
@@ -18,7 +20,12 @@ import dagger.android.support.HasSupportFragmentInjector
 object AppInjector {
 
     fun init(app: CurrencyExchangeApp) {
-        DaggerAppComponent.builder().application(app).build().inject(app)
+        DaggerAppComponent
+                .builder()
+                .application(app)
+                .applicationModule(AppModule(app))
+                .build()
+                .inject(app)
 
         app.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
 
@@ -48,7 +55,7 @@ object AppInjector {
             activity.supportFragmentManager
                     .registerFragmentLifecycleCallbacks(
                             object : FragmentManager.FragmentLifecycleCallbacks() {
-                                override fun onFragmentCreated(fm: FragmentManager, fragment: Fragment, savedInstanceState: Bundle?) {
+                                override fun onFragmentPreAttached(fm: FragmentManager, fragment: Fragment, context: Context) {
                                     if (fragment is Injectable) {
                                         AndroidSupportInjection.inject(fragment)
                                     }
