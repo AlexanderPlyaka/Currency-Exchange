@@ -2,4 +2,8 @@ package com.obriylabs.currencyandroid.data
 
 import com.obriylabs.currencyandroid.domain.exception.Failure
 
-class DateEquals : Failure.FeatureFailure()
+sealed class Rejection : Failure.FeatureFailure() {
+
+    object DateEquals : Rejection()
+
+}

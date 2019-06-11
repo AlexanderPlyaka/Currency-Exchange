@@ -1,7 +1,6 @@
 package com.obriylabs.currencyandroid.domain.interactor
 
-import android.util.Log
-import com.obriylabs.currencyandroid.data.DateEquals
+import com.obriylabs.currencyandroid.data.Rejection
 import com.obriylabs.currencyandroid.data.repository.IExchangersRepository
 import com.obriylabs.currencyandroid.data.model.ReceivedExchangers
 import com.obriylabs.currencyandroid.data.model.DataOfExchangers
@@ -25,8 +24,9 @@ class GetExchangersDb
             savedDate = result.date
         }
 
-        return when (receivedDate) {
-            sdf.parse(savedDate) -> Result.Error(DateEquals())
+        return when {
+            receivedDate == sdf.parse(savedDate) && exchangersRepository.fetchExchangersFromDb().isSuccess ->
+                Result.Error(Rejection.DateEquals)
             else -> {
                 exchangersRepository.saveDataOfExchangersToDb(params.data)
                 exchangersRepository.fetchExchangers(params.data.filePath)

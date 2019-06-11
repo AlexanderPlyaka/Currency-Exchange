@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.NavHostFragment
-import com.obriylabs.currencyandroid.data.DateEquals
+import com.obriylabs.currencyandroid.data.Rejection
 import com.obriylabs.currencyandroid.domain.exception.Failure
 import com.obriylabs.currencyandroid.extension.failure
 import com.obriylabs.currencyandroid.extension.observe
@@ -59,7 +59,7 @@ class StartFragment : BaseFragment<SharedExchangersViewModel>(R.layout.start_fra
             is Failure.DatabaseError -> {
                 // TODO
             }
-            is DateEquals -> {
+            is Rejection.DateEquals -> {
                 NavHostFragment.findNavController(this).navigate(R.id.mapsFragment)
             }
         }
